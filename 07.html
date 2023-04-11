@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Практична_робота-24_07</title>
+    <style>
+        body {
+          font-family: Arial, sans-serif;
+        }
+        .question {
+          margin-bottom: 10px;
+        }
+        .input-answer {
+          margin-bottom: 5px;
+        }
+        .result {
+          margin-top: 10px;
+        }
+        .correct {
+          color: green;
+        }
+        .incorrect {
+          color: red;
+        }
+      </style>
+    </head>
+    <body>
+      <div id="root"></div>
+      <script src="https://unpkg.com/react@17.0.2/umd/react.development.js"></script>
+      <script src="https://unpkg.com/react-dom@17.0.2/umd/react-dom.development.js"></script>
+      <script>
+        import React, { useState } from "react";
+import moment from "moment";
+
+const Organizer = () => {
+  const [currentDate, setCurrentDate] = useState(moment());
+  const [todos, setTodos] = useState([]);
+  const [newTodo, setNewTodo] = useState("");
+
+  const handleInputChange = (e) => {
+    setNewTodo(e.target.value);
+  };
+
+  const handleAddTodo = () => {
+    if (newTodo.trim() !== "") {
+      setTodos([
+        ...todos,
+        {
+          id: Date.now(),
+          date: currentDate.format("YYYY-MM-DD"),
+          text: newTodo,
+          completed: false,
+        },
+      ]);
+      setNewTodo("");
+    }
+  };
+
+  const handleDeleteTodo = (id) => {
+    setTodos(todos.filter((todo) => todo.id !== id));
+  };
+
+  const handleToggleTodo = (id) => {
+    setTodos(
+      todos.map((todo) =>
+        todo.id === id ? { ...todo, completed: !todo.completed } : todo
+      )
+    );
+  };
+
+  const handleDateChange = (month) => {
+    setCurrentDate(currentDate.clone().add(month, "month"));
+  };
+
+  const handlePrevMonth = () => {
+    handleDateChange(-1);
+  };
+
+  const handleNextMonth = () => {
+    handleDateChange(1);
+  };
+
+  return (
+    <div>
+      <h1>Органайзер</h1>
+      <div>
+        <button onClick={handlePrevMonth}>&#8592;</button>
+        <h2>{currentDate.format("MMMM YYYY")}</h2>
+        <button onClick={handleNextMonth}>&#8594;</button>
+      </div>
+      <div>
+        <table>
+          <thead>
+            <tr>
+              <th>Нд</th>
+              <th>Пн</th>
+              <th>Вт</th>
+              <th>Ср</th>
+              <th>Чт</th>
+              <th>Пт</th>
+              <th>Сб</th>
+            </tr>
+          </thead>
+          <tbody>
+            {getCalendarDates(currentDate).map((week, index) => (
+              <tr key={index}>
+                {week.map((date) => (
+                  <td
+                    key={date.format("YYYY-MM-DD")}
+                    onClick={() => setCurrentDate(date)}
+                    className={
+                      date.format("YYYY-MM-DD") ===
+                      currentDate.format("YYYY-MM-DD")
+                        ? "selected"
+                        : ""
+                    }
+                  >
+                    {date.format("D")}
+                    {todos
+                      .filter((todo) => todo.date === date.format("YYYY-MM-DD"))
+                      .map((todo) => (
+                        <div
+                          key={todo.id}
+                          style={{ textDecoration: todo.completed ? "line-through" : "none" }}
+                        >
+                          <input
+                            type="checkbox"
+                            checked={todo.completed}
+                            onChange={() => handleToggleTodo(todo.id)}
+                          />
+                          {todo.text}
+                          <button onClick={() => handleDeleteTodo(todo.id)}>Видалити</button>
+                        </div>
+                      ))}
+                  </td>
+                  )}
+                  </tr>
+))}
+</tbody>
+</table>
+</div>
+<div>
+<input
+       type="text"
+       value={newTodo}
+       onChange={handleInputChange}
+       placeholder="Додати справу"
+     />
+<button onClick={handleAddTodo}>Додати</button>
+</div>
+</div>
+);
+};
+
+const getCalendarDates = (date) => {
+const startOfMonth = date.clone().startOf("month");
+const endOfMonth = date.clone().endOf("month");
+const startDate = startOfMonth.clone().startOf("week");
+const endDate = endOfMonth.clone().endOf("week");
+const dates = [];
+
+while (startDate.isSameOrBefore(endDate)) {
+dates.push(startDate.clone());
+startDate.add(1, "day");
+}
+
+return chunkArray(dates, 7);
+};
+
+const chunkArray = (array, size) => {
+const chunkedArray = [];
+let index = 0;
+
+while (index < array.length) {
+chunkedArray.push(array.slice(index, index + size));
+index += size;
+}
+
+return chunkedArray;
+};
+
+export default Organizer;
+</script>
+</body>
+</html>

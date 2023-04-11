@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Практична_робота-24_02</title>
+    <style>
+        body {
+          font-family: Arial, sans-serif;
+        }
+        .question {
+          margin-bottom: 10px;
+        }
+        .input-answer {
+          margin-bottom: 5px;
+        }
+        .result {
+          margin-top: 10px;
+        }
+        .correct {
+          color: green;
+        }
+        .incorrect {
+          color: red;
+        }
+      </style>
+    </head>
+    <body>
+      <div id="root"></div>
+      <script src="https://unpkg.com/react@17.0.2/umd/react.development.js"></script>
+      <script src="https://unpkg.com/react-dom@17.0.2/umd/react-dom.development.js"></script>
+      <script>
+        const { useState } = React;
+        const questions = [    {      question: "Яка столиця України?",      answer: "Київ",    },    {      question: "Скільки днів у лютому в невисокосний рік?",      answer: "28",    },    {      question: "Скільки планет у Сонячній системі?",      answer: "8",    },    {      question: "Як називається велика вода на Землі?",      answer: "Океан",    },  ];
+
+const Test = () => {
+  const [answers, setAnswers] = useState([]);
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleAnswerChange = (event, index) => {
+    const updatedAnswers = [...answers];
+    updatedAnswers[index] = event.target.value;
+    setAnswers(updatedAnswers);
+  };
+
+  const handleSubmit = () => {
+    setSubmitted(true);
+  };
+
+  const renderResult = () => {
+    return questions.map((question, index) => (
+      <div key={index} className="result">
+        <div className="question">{question.question}</div>
+        {submitted && (
+          <div
+            className={
+              answers[index] === question.answer
+                ? "correct"
+                : "incorrect"
+            }
+          >
+            Ваша відповідь: {answers[index]}
+            <br />
+            {answers[index] === question.answer
+              ? "Правильно"
+              : `Не правильно. Правильна відповідь: ${question.answer}`}
+          </div>
+        )}
+      </div>
+    ));
+  };
+
+  return (
+    <div>
+      {questions.map((question, index) => (
+        <div key={index} className="question">
+          {question.question}
+          <br />
+          {!submitted ? (
+            <input
+              type="text"
+              className="input-answer"
+              value={answers[index] || ""}
+              onChange={(event) => handleAnswerChange(event, index)}
+            />
+          ) : (
+            <div>
+              Ваша відповідь: {answers[index]}
+              <br />
+              {answers[index] === question.answer
+                ? (
+                  <span className="correct">Правильно</span>
+                ) : (
+                  <span className="incorrect">
+                    Не правильно. Правильна відповідь:{" "}
+                    {question.answer}
+                  </span>
+                )}
+            </div>
+            )}
+</div>
+))}
+{!submitted && (
+<button onClick={handleSubmit}>Скласти тест</button>
+)}
+{submitted && renderResult()}
+</div>
+);
+};
+ReactDOM.render(<Test />, document.getElementById("root"));
+</script>
+</body>
+</html>

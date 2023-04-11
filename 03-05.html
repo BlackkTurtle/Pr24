@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Практична_робота-24_03-05</title>
+    <style>
+        body {
+          font-family: Arial, sans-serif;
+        }
+        .question {
+          margin-bottom: 10px;
+        }
+        .input-answer {
+          margin-bottom: 5px;
+        }
+        .result {
+          margin-top: 10px;
+        }
+        .correct {
+          color: green;
+        }
+        .incorrect {
+          color: red;
+        }
+      </style>
+    </head>
+    <body>
+      <div id="root"></div>
+      <script src="https://unpkg.com/react@17.0.2/umd/react.development.js"></script>
+      <script src="https://unpkg.com/react-dom@17.0.2/umd/react-dom.development.js"></script>
+      <script>
+        import React, { useState } from "react";
+
+const questions = [
+  {
+    question: "Яка столиця України?",
+    options: ["Київ", "Львів", "Харків", "Одеса"],
+    answers: [0]
+  },
+  {
+    question: "Який рік був оголошений Незалежність України?",
+    options: ["1990", "1991", "1992", "1993"],
+    answers: [1]
+  },
+  {
+    question: "Хто написав 'Кобзар'?",
+    options: ["Іван Франко", "Тарас Шевченко", "Леся Українка", "Іван Котляревський"],
+    answers: [1]
+  }
+];
+
+const Quiz = () => {
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [userAnswers, setUserAnswers] = useState([]);
+
+  const handleOptionChange = (e) => {
+    const value = parseInt(e.target.value, 10);
+    const updatedAnswers = [...userAnswers];
+
+    if (e.target.checked) {
+      updatedAnswers[currentQuestion] = [...updatedAnswers[currentQuestion], value];
+    } else {
+      updatedAnswers[currentQuestion] = updatedAnswers[currentQuestion].filter((answer) => answer !== value);
+    }
+
+    setUserAnswers(updatedAnswers);
+  };
+
+  const handlePrevious = () => {
+    setCurrentQuestion(currentQuestion - 1);
+  };
+
+  const handleNext = () => {
+    setCurrentQuestion(currentQuestion + 1);
+  };
+
+  const handleCheckAnswers = () => {
+  };
+
+  return (
+    <div>
+      <h1>Тест</h1>
+      <h2>Питання {currentQuestion + 1}</h2>
+      <p>{questions[currentQuestion].question}</p>
+      <form>
+        {questions[currentQuestion].options.map((option, index) => (
+          <div key={index}>
+            <label>
+              <input
+                type="checkbox"
+                value={index}
+                checked={userAnswers[currentQuestion]?.includes(index)}
+                onChange={handleOptionChange}
+              />
+              {option}
+            </label>
+          </div>
+        ))}
+      </form>
+      <button onClick={handlePrevious} disabled={currentQuestion === 0}>
+        Назад
+      </button>
+      <button onClick={handleNext} disabled={currentQuestion === questions.length - 1}>
+        Вперед
+      </button>
+      <button onClick={handleCheckAnswers}>Перевірити</button>
+    </div>
+  );
+};
+
+export default Quiz;
+
+</script>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Практична_робота-24_01</title>
+    <script src="https://unpkg.com/react@17.0.2/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@17.0.2/umd/react-dom.development.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    
+    <script>
+      const { useState } = React;
+
+      const EmployeesTable = () => {
+        const [employees, setEmployees] = useState([
+          { імя: "Іван", прізвище: "Петров", дні: 20, ставка: 100 },
+          { імя: "Марія", прізвище: "Іванова", дні: 25, ставка: 120 },
+          { імя: "Петро", прізвище: "Сидоренко", дні: 18, ставка: 90 },
+          { імя: "Олександра", прізвище: "Коваленко", дні: 22, ставка: 110 },
+        ]);
+
+        const handleDaysChange = (event, index) => {
+          const updatedEmployees = [...employees];
+          updatedEmployees[index].дні = event.target.value;
+          setEmployees(updatedEmployees);
+        };
+
+        const handleRateChange = (event, index) => {
+          const updatedEmployees = [...employees];
+          updatedEmployees[index].ставка = event.target.value;
+          setEmployees(updatedEmployees);
+        };
+
+        return (
+          <div>
+            <table>
+              <thead>
+                <tr>
+                  <th>Ім'я</th>
+                  <th>Прізвище</th>
+                  <th>Дні</th>
+                  <th>Ставка</th>
+                  <th>Зарплата</th>
+                </tr>
+              </thead>
+              <tbody>
+                {employees.map((employee, index) => (
+                  <tr key={index}>
+                    <td>{employee.імя}</td>
+                    <td>{employee.прізвище}</td>
+                    <td>
+                      <input
+                        type="number"
+                        value={employee.дні}
+                        onChange={(event) => handleDaysChange(event, index)}
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="number"
+                        value={employee.ставка}
+                        onChange={(event) => handleRateChange(event, index)}
+                      />
+                    </td>
+                    <td>{employee.дні * employee.ставка}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <p>
+              Сумарна зарплата всіх працівників:{" "}
+              {employees.reduce((total, employee) => total + employee.дні * employee.ставка, 0)}
+            </p>
+          </div>
+        );
+      };
+
+      ReactDOM.render(<EmployeesTable />, document.getElementById("root"));
+    </script>
+  </body>
+</html>
